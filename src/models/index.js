@@ -15,4 +15,5 @@ const connection = new Pool(databaseConfig)
 
 export { connection }
 export * as authModel from "./authModel.js"
-export * as queries from "../repositorys/index.js"
+export * as queries from "../repositories/index.js"
+export * as schemas from "../schemas/index.js"

@@ -12,4 +12,4 @@ server.use(cors())
 server.use(json())
 server.use(router)
 
-server.listen(PORT, () => console.log(`Acesse em http://localhost:${PORT}`))
+server.listen(PORT, () => console.log(`Access em http://localhost:${PORT}`))

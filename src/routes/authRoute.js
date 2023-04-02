@@ -5,8 +5,15 @@ import { authController } from "../controllers/index.js"
 const authRoute = Router()
 
 authRoute.post(
-  "/signup",
-  authMiddleware.validateSignUp,
+  "/signupDoctor",
+  authMiddleware.validateDoctor,
+  authMiddleware.checkEmail,
+  authController.signUp
+)
+
+authRoute.post(
+  "/signupPatient",
+  authMiddleware.validatePatient,
   authMiddleware.checkEmail,
   authController.signUp
 )

@@ -1,26 +1,50 @@
 import bcrypt from "bcrypt"
 import { authModel } from "../models/index.js"
+import { authSchema } from "../schemas/index.js"
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 
 export const checkEmail = async (request, response, next) => {
   const { email } = response.locals.newUser
-
   const emailExists = await authModel.emailExists(email)
+
   if (emailExists) return response.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT)
+
   next()
   return true
 }
 
-export const validateSignUp = (request, response, next) => {
+export const validateDoctor = (request, response, next) => {
+  const Body = authSchema.signupSchemaDoctor.validate(request.body)
+
+  // if (Body.error) {
+  //   console.log(error)
+  //   return response.status(StatusCodes.UNPROCESSABLE_ENTITY).send(ReasonPhrases.UNPROCESSABLE_ENTITY)
+  // }
+ 
+  const newUser = {
+    name: Body.value.name,
+    type: 1,
+    specialty: Body.value.specialty,
+    locality: Body.value.locality,
+    email: Body.value.email,
+    password: Body.value.password,
+  }
+  
+  response.locals.newUser = newUser
+  next()
+  return true
+}
+
+export const validatePatient = (request, response, next) => {
   const Body = authModel.signupSchema.validate(request.body)
   
   if (Body.error) return response.status(StatusCodes.UNPROCESSABLE_ENTITY).send(ReasonPhrases.UNPROCESSABLE_ENTITY)
 
   const newUser = {
-    username: Body.value.username.result,
+    type: 0,
+    idType: Body.value.idType,
     email: Body.value.email.result,
     password: Body.value.password,
-    pictureUrl: Body.value.pictureUrl,
   }
 
   response.locals.newUser = newUser
@@ -46,6 +70,7 @@ export const validateSignIn = (request, response, next) => {
 export const checkPassword = async (request, response, next) => {
   const { email, password } = response.locals.user
   const passwordCrypt = await authModel.getPasswordEmail(email)
+
   if (!passwordCrypt) return response.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED)
 
   const IsValid = bcrypt.compareSync(password, passwordCrypt)

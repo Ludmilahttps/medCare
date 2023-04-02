@@ -9,31 +9,66 @@ const EXPIRE_TIME = 60 * 60 * 24 // *1 DAY
 const jwtExpire = {expiresIn: EXPIRE_TIME,}
 
 export const signUp = async (request, response) => {
-  const { username, email, password, pictureUrl } = response.locals.newUser
-  const passwordCrypt = bcrypt.hashSync(password, 12)
-  const user = {
-    username,
-    email,
-    password: passwordCrypt,
-    pictureUrl,
+  const { type } = response.locals.newUser
+
+  if( type )
+  {
+    // is Doctor
+    const { name, email, password, specialty, locality } = response.locals.newUser
+    const passwordCrypt = bcrypt.hashSync(password, 12)
+    const doctor = {
+      name,
+      specialty,
+      locality,
+    }
+
+    try {
+      await authModel.insertDoctor(doctor)
+      console.log(doctor)
+    } catch (error) {
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
+    }
+
+    const userId = await authModel.getDoctorId(name)
+    console.log(userId)
+    const user = {
+      type,
+      idType: userId,
+      email,
+      password: passwordCrypt,
+    }
+    
+    try {
+      await authModel.insertUser(user)
+      console.log(user)
+      return response.status(StatusCodes.CREATED).send(ReasonPhrases.CREATED)
+   
+    } catch (error) {
+      console.log(error)
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
+    }
   }
-  
-  try {
-    await authModel.insertUser(user)
-    console.log(user)
-    return response.status(StatusCodes.CREATED).send(ReasonPhrases.CREATED)
-  } catch (error) {
-    return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
+  else{
+    // is Patient
+    const passwordCrypt = bcrypt.hashSync(password, 12)
+    user = {
+      type,
+      idType,
+      email,
+      password: passwordCrypt,
+    }
   }
 }
 
 export const signIn = async (request, response) => {
   const { email } = response.locals.user
+
   try {
     const user = await authModel.getUserByEmail(email)
     const { id: userId } = user
     const data = { userId }
     const token = jwt.sign(data, jwtExpire)
+
     return response.status(StatusCodes.OK).send(token)
   } catch (error) {
     return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)

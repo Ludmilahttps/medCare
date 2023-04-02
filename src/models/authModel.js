@@ -1,6 +1,5 @@
-import joi from "joi"
 import { connection } from "./index.js"
-import { queries } from "../repositorys/index.js"
+import { queries } from "../repositories/index.js"
 
 export const emailExists = async (email) => {
     const { rows: user } = await connection.query(queries.getEmailByEmail(), [
@@ -11,8 +10,18 @@ export const emailExists = async (email) => {
   }
   
   export const insertUser = async (user) => {
-    const { username, email, password,  pictureUrl} = user
-    await connection.query(queries.insertInUsers(), [username, email, password, pictureUrl])
+    const { type, idType, email, password } = user
+    await connection.query(queries.insertInUsers(), [type, idType, email, password])
+  }
+
+  export const insertDoctor = async (user) => {
+    const { name, specialty, locality } = user
+    await connection.query(queries.insertDoctors(), [name, specialty, locality])
+  }
+
+  export const getDoctorId = async (name) => {
+    const { rows: id } = await connection.query(queries.getDoctorId(), [ name,])
+    return id[0]
   }
   
   export const getPasswordEmail = async (email) => {
@@ -29,15 +38,3 @@ export const emailExists = async (email) => {
     ])
     return user[0]
   }
-  
-  export const signupSchema = joi.object({
-    username: joi.string().required().trim(),
-    email: joi.string().email().required().trim(),
-    password: joi.string().required(),
-    pictureUrl: joi.string().uri().required(),
-  })
-  
-  export const signinSchema = joi.object({
-    email: joi.string().email().required().trim(),
-    password: joi.string().required(),
-  })
