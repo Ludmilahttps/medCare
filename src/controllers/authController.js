@@ -33,7 +33,7 @@ export const signUp = async (request, response) => {
     console.log(userId)
     const user = {
       type,
-      idType: userId,
+      typeId: userId.id,
       email,
       password: passwordCrypt,
     }

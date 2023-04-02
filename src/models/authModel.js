@@ -10,8 +10,8 @@ export const emailExists = async (email) => {
   }
   
   export const insertUser = async (user) => {
-    const { type, idType, email, password } = user
-    await connection.query(queries.insertInUsers(), [type, idType, email, password])
+    const { type, typeId, email, password } = user
+    await connection.query(queries.insertInUsers(), [type, typeId, email, password])
   }
 
   export const insertDoctor = async (user) => {
