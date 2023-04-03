@@ -33,8 +33,6 @@ export const validateDoctor = (request, response, next) => {
 export const validatePatient = (request, response, next) => {
   const Body = authSchema.signupSchemaPatient.validate(request.body)
   
-  //if (Body.error) return response.status(StatusCodes.UNPROCESSABLE_ENTITY).send(ReasonPhrases.UNPROCESSABLE_ENTITY)
-
   const newUser = {
     name: Body.value.name,
     type: 0,
@@ -49,10 +47,10 @@ export const validatePatient = (request, response, next) => {
 }
 
 export const validateSignIn = (request, response, next) => {
-  const Body = authModel.signinSchema.validate(request.body)
+  const Body = authSchema.signinSchema.validate(request.body)
 
   if (Body.error) return response.status(StatusCodes.UNPROCESSABLE_ENTITY).send(ReasonPhrases.UNPROCESSABLE_ENTITY)
-
+  
   const user = {
     email: Body.value.email,
     password: Body.value.password,
@@ -66,7 +64,7 @@ export const validateSignIn = (request, response, next) => {
 export const checkPassword = async (request, response, next) => {
   const { email, password } = response.locals.user
   const passwordCrypt = await authModel.getPasswordEmail(email)
-
+  
   if (!passwordCrypt) return response.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED)
 
   const IsValid = bcrypt.compareSync(password, passwordCrypt)

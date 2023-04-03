@@ -87,13 +87,14 @@ export const signUp = async (request, response) => {
 
 export const signIn = async (request, response) => {
   const { email } = response.locals.user
-
+  
   try {
     const user = await authModel.getUserByEmail(email)
     const { id: userId } = user
     const data = { userId }
-    const token = jwt.sign(data, jwtExpire)
-
+  
+    //const token = jwt.sign(data, jwtExpire)
+    const token = {data, jwtExpire}
     return response.status(StatusCodes.OK).send(token)
   } catch (error) {
     return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
