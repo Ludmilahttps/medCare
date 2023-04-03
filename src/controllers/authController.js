@@ -2,7 +2,7 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
-import { authModel } from "../service/index.js"
+import { authService } from "../service/index.js"
 
 dotenv.config()
 const EXPIRE_TIME = 60 * 60 * 24 // *1 DAY
@@ -23,13 +23,13 @@ export const signUp = async (request, response) => {
     }
 
     try {
-      await authModel.insertDoctor(doctor)
+      await authService.insertDoctor(doctor)
       console.log(doctor)
     } catch (error) {
       return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
     }
 
-    const userId = await authModel.getDoctorId(name)
+    const userId = await authService.getDoctorId(name)
     console.log(userId)
     const user = {
       type,
@@ -39,7 +39,7 @@ export const signUp = async (request, response) => {
     }
     
     try {
-      await authModel.insertUser(user)
+      await authService.insertUser(user)
       console.log(user)
       return response.status(StatusCodes.CREATED).send(ReasonPhrases.CREATED)
    
@@ -57,14 +57,14 @@ export const signUp = async (request, response) => {
     }
 
     try {
-      await authModel.insertPatient(patient)
+      await authService.insertPatient(patient)
       console.log(patient)
     } catch (error) {
       console.log(error)
       return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
     }
 
-    const userId = await authModel.getPatientId(name)
+    const userId = await authService.getPatientId(name)
     console.log(userId)
     const user = {
       type,
@@ -74,7 +74,7 @@ export const signUp = async (request, response) => {
     }
     
     try {
-      await authModel.insertUser(user)
+      await authService.insertUser(user)
       console.log(user)
       return response.status(StatusCodes.CREATED).send(ReasonPhrases.CREATED)
    
@@ -89,7 +89,7 @@ export const signIn = async (request, response) => {
   const { email } = response.locals.user
   
   try {
-    const user = await authModel.getUserByEmail(email)
+    const user = await authService.getUserByEmail(email)
     const { id: userId } = user
     const data = { userId }
   
