@@ -20,15 +20,23 @@ export const emailExists = async (email) => {
   }
 
   export const getDoctorId = async (name) => {
-    const { rows: id } = await connection.query(queries.getDoctorId(), [ name,])
+    const { rows: id } = await connection.query(queries.getDoctorId(), [ name, ])
+    return id[0]
+  }
+
+  export const insertPatient = async (user) => {
+    const { name, cellphone } = user
+    await connection.query(queries.insertPatient(), [ name, cellphone])
+  }
+
+  export const getPatientId = async (name) => {
+    const { rows: id } = await connection.query(queries.getPatientId(), [ name, ])
     return id[0]
   }
   
   export const getPasswordEmail = async (email) => {
     const { rows: passwordCrypt } = await connection.query(
-      queries.getPasswordByEmail(),
-      [email]
-    )
+      queries.getPasswordByEmail(), [email])
     return passwordCrypt[0]?.password
   }
   

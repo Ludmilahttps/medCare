@@ -16,11 +16,6 @@ export const checkEmail = async (request, response, next) => {
 export const validateDoctor = (request, response, next) => {
   const Body = authSchema.signupSchemaDoctor.validate(request.body)
 
-  // if (Body.error) {
-  //   console.log(error)
-  //   return response.status(StatusCodes.UNPROCESSABLE_ENTITY).send(ReasonPhrases.UNPROCESSABLE_ENTITY)
-  // }
- 
   const newUser = {
     name: Body.value.name,
     type: 1,
@@ -36,14 +31,15 @@ export const validateDoctor = (request, response, next) => {
 }
 
 export const validatePatient = (request, response, next) => {
-  const Body = authModel.signupSchema.validate(request.body)
+  const Body = authSchema.signupSchemaPatient.validate(request.body)
   
-  if (Body.error) return response.status(StatusCodes.UNPROCESSABLE_ENTITY).send(ReasonPhrases.UNPROCESSABLE_ENTITY)
+  //if (Body.error) return response.status(StatusCodes.UNPROCESSABLE_ENTITY).send(ReasonPhrases.UNPROCESSABLE_ENTITY)
 
   const newUser = {
+    name: Body.value.name,
     type: 0,
-    idType: Body.value.idType,
-    email: Body.value.email.result,
+    cellphone: Body.value.cellphone,
+    email: Body.value.email,
     password: Body.value.password,
   }
 

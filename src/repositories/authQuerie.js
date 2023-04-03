@@ -30,12 +30,34 @@ export const getEmailByEmail = () => {
     return query
   }
 
+  export const insertPatient = () => {
+    const query = `--sql
+          INSERT INTO
+              patients ("name", cellphone)
+          VALUES
+              ($1, $2);        
+      `
+    return query
+  }
+
   export const getDoctorId = () => {
     const query = `--sql
       SELECT
           "id"
       FROM
           doctors
+      WHERE
+          name = $1;
+  `
+    return query
+  }
+
+  export const getPatientId = () => {
+    const query = `--sql
+      SELECT
+          "id"
+      FROM
+          patients
       WHERE
           name = $1;
   `

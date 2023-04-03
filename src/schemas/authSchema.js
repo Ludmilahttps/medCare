@@ -10,6 +10,7 @@ export const signupSchemaDoctor = joi.object({
 
 export const signupSchemaPatient = joi.object({
     name: joi.string().required,
+    cellphone: joi.number().required,
     email: joi.string().email().required().trim(),
     password: joi.string().required(),
 })

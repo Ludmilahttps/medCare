@@ -49,13 +49,38 @@ export const signUp = async (request, response) => {
     }
   }
   else{
-    // is Patient
+    const { name, cellphone, email, password } = response.locals.newUser
     const passwordCrypt = bcrypt.hashSync(password, 12)
-    user = {
+    const patient = {
+      name,
+      cellphone,
+    }
+
+    try {
+      await authModel.insertPatient(patient)
+      console.log(patient)
+    } catch (error) {
+      console.log(error)
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
+    }
+
+    const userId = await authModel.getPatientId(name)
+    console.log(userId)
+    const user = {
       type,
-      idType,
+      typeId: userId.id,
       email,
       password: passwordCrypt,
+    }
+    
+    try {
+      await authModel.insertUser(user)
+      console.log(user)
+      return response.status(StatusCodes.CREATED).send(ReasonPhrases.CREATED)
+   
+    } catch (error) {
+      console.log(error)
+      return response.status(StatusCodes.INTERNAL_SERVER_ERROR).send(ReasonPhrases.INTERNAL_SERVER_ERROR)
     }
   }
 }
