@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt"
-import { authModel } from "../models/index.js"
+import { authService } from "../service/index.js"
 import { authSchema } from "../schemas/index.js"
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 
 export const checkEmail = async (request, response, next) => {
   const { email } = response.locals.newUser
-  const emailExists = await authModel.emailExists(email)
+  const emailExists = await authService.emailExists(email)
 
   if (emailExists) return response.status(StatusCodes.CONFLICT).send(ReasonPhrases.CONFLICT)
 
@@ -63,7 +63,7 @@ export const validateSignIn = (request, response, next) => {
 
 export const checkPassword = async (request, response, next) => {
   const { email, password } = response.locals.user
-  const passwordCrypt = await authModel.getPasswordEmail(email)
+  const passwordCrypt = await authService.getPasswordEmail(email)
   
   if (!passwordCrypt) return response.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED)
 

@@ -1,4 +1,4 @@
-import { connection } from "./index.js"
+import { connection } from "../config/database.js"
 import { authQuerie } from "../repositories/index.js"
 
 export const emailExists = async (email) => {

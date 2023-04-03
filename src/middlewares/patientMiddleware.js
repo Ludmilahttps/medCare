@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt"
-import { authModel } from "../models/index.js"
+import { authModel } from "../service/index.js"
 import { authSchema } from "../schemas/index.js"
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
 

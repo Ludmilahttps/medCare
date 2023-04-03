@@ -2,7 +2,7 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 import { ReasonPhrases, StatusCodes } from 'http-status-codes'
-import { authModel } from "../models/index.js"
+import { authModel } from "../service/index.js"
 
 dotenv.config()
 const EXPIRE_TIME = 60 * 60 * 24 // *1 DAY
